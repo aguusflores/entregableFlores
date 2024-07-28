@@ -1,43 +1,26 @@
-let moneda = prompt("¿A qué moneda querés convertir? (dolar, euros, reales)");
-let pesos = parseInt(prompt("Introduce la cantidad de pesos argentinos"));
+const tasas = {
+    dolar: 1500,
+    euros: 1000,
+    reales: 170
+};
 
 function convertir(moneda, pesos) {
-    let dolar = 1500;
-    let euros = 1000;
-    let reales = 170;
-    let resultado = moneda * pesos
-
-    return resultado
-}
-convertir(moneda, pesos)
-
-
-if (moneda === "dolar" || moneda === "euros" || moneda === "reales") {
-
-    let resultado;
-
-    if (moneda === "dolar") {
-        alert("La cantidad de" + pesos + "pesos argentinos es igual a" + resultado + "dólares")
+    let tasaCambio = tasas[moneda];
+    if (tasaCambio) {
+        return pesos * tasaCambio;
+    } else {
+        return "Moneda invalida, seleccione otra";
     }
-
-} else if (moneda === "euros") {
-
-    alert("La cantidad de" + pesos + "pesos argentinos es igual a" + resultado + "euros")
-
-} else if (moneda === "reales") {
-
-    alert("La cantidad de" + pesos + "pesos argentinos es igual a" + resultado + "reales")
-
 }
 
-else
- alert ("Moneda no válida. Por favor, elige entre dólares, euros o reales.");
+for (let i = 0; i < 3; i++) { 
+    let moneda = prompt("¿A qué moneda querés convertir? (dolar, euros, reales)").toLowerCase();
+    let pesos = parseInt(prompt("Introduce la cantidad de pesos argentinos"));
+    let resultado = convertir(moneda, pesos);
 
-let confirmacion = prompt("Quieres realizar otra operacion si/no")
-if (confirmacion == no){
-    continuar = false
-    alert("Gracias")
+    if (moneda === "dolar" || moneda === "euros" || moneda === "reales") {
+        alert("La cantidad de " + pesos + " pesos argentinos es igual a " + resultado + " " + moneda + "(s)");
+    } else {
+        alert("Moneda invalida, seleccione otra");
+    }
 }
-
-
-
