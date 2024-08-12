@@ -1,26 +1,58 @@
-const tasas = {
-    dolar: 1500,
-    euros: 1000,
-    reales: 170
-};
 
-function convertir(moneda, pesos) {
-    let tasaCambio = tasas[moneda];
-    if (tasaCambio) {
-        return pesos * tasaCambio;
-    } else {
-        return "Moneda invalida, seleccione otra";
+class Divisas {
+    constructor(moneda, tasa) {
+        this.moneda = moneda;
+        this.tasa = tasa;
+        this.pesos = 0;
+    }
+
+    enPesos(pesos) {
+        let precioEnPesos = this.tasa * pesos;
+        console.log(`El precio en pesos es: $${precioEnPesos}`);
+        return precioEnPesos;
     }
 }
 
-for (let i = 0; i < 3; i++) { 
-    let moneda = prompt("¿A qué moneda querés convertir? (dolar, euros, reales)");
-    let pesos = parseInt(prompt("Introduce la cantidad de pesos argentinos"));
-    let resultado = convertir(moneda, pesos);
+const divisa1 = new Divisas('dolar', 1500);
+const divisa2 = new Divisas('euros', 1000);
+const divisa3 = new Divisas('reales', 170);
 
-    if (moneda === "dolar" || moneda === "euros" || moneda === "reales") {
-        alert("La cantidad de " + pesos + " pesos argentinos es igual a " + resultado + " " + moneda + " en el mercado");
-    } else {
-        alert("Moneda invalida, seleccione otra");
-    }
+const monedas = [divisa1, divisa2, divisa3];
+const conversion = [];
+
+const tasas = () => {
+    let cargaMoneda = document.getElementById("moneda");
+    let cargaPesos = parseInt(document.getElementById("pesos"));
+    let convertir = document.getElementById("button"); 
 }
+   
+
+function boton   () {
+    addButton = querySelector("button");
+    addButton.forEach(button => {
+
+    button.onclick = (e) => {
+        const cargaMoneda = e.currentTarget.id
+
+        let validar = monedas.some(divisa => divisa.moneda === cargaMoneda);
+            if (validar) {
+                console.log("La moneda ingresada es válida");
+                let divisaSeleccionada = monedas.find(divisa => divisa.moneda === cargaMoneda);
+
+                let resultado = divisaSeleccionada.enPesos(cargaPesos);
+                conversion.push({ moneda: cargaMoneda, pesos: cargaPesos, resultado });
+                
+                let print = document.getElementById("resultado");
+                print.innerText = `El total es: $${resultado}`;
+            } else { 
+                document.getElementById("resultado").innerText  = "La moneda ingresada no es válida";
+            }
+            localStorage.setItem("conversion", JSON.stringify(conversion)); }
+        })
+
+        
+
+    }
+
+
+    document.addEventListener('DOMContentLoaded', addButtonEventListener);
