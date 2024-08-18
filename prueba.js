@@ -1,4 +1,3 @@
-
 class Divisas {
     constructor(moneda, tasa) {
         this.moneda = moneda;
@@ -18,52 +17,36 @@ const divisa2 = new Divisas('euros', 1000);
 const divisa3 = new Divisas('reales', 170);
 
 const monedas = [divisa1, divisa2, divisa3];
-const conversion = [];
-
-const tasas = () => {
-    preventDefault();
-    let cargaMoneda = document.getElementById("moneda");
-    let cargaPesos = parseInt(document.getElementById("pesos"));
-    let convertir = document.getElementById("button");
-}
-
 
 function boton() {
-   const addButton = document.querySelectorAll("button");
+    const addButton = document.querySelectorAll("button");
     addButton.forEach(button => {
         button.onclick = (e) => {
             const cargaMoneda = e.currentTarget.id;
             const cargaPesos = parseInt(document.getElementById("pesos").value);
 
-        if (cargaPesos <= 0 || isNaN(cargaPesos)) {
-            document.getElementById("resultado").innerText = "Por favor, ingrese un valor positivo válido.";
-            return;
+            if (cargaPesos <= 0 || isNaN(cargaPesos)) {
+                document.getElementById("resultado").innerText = "Por favor, ingrese un valor positivo válido.";
+                return;
+            }
+
+            let validar = monedas.some(divisa => divisa.moneda === cargaMoneda);
+
+            if (validar) {
+                let divisaSeleccionada = monedas.find(divisa => divisa.moneda === cargaMoneda);
+                let resultado = divisaSeleccionada.enPesos(cargaPesos);
+
+                let conversion = { moneda: cargaMoneda, pesos: cargaPesos, resultado };
+                localStorage.setItem("conversion", JSON.stringify([conversion]));
+
+                let print = document.getElementById("resultado");
+                print.innerText = `El total es: $${resultado}`;
+            } else {
+                document.getElementById("resultado").innerText = "La moneda ingresada no es válida";
+            }
         }
-
-        let validar = monedas.some(divisa => divisa.moneda === cargaMoneda);
-
-        if (validar) {
-            let divisaSeleccionada = monedas.find(divisa => divisa.moneda === cargaMoneda);
-            let resultado = divisaSeleccionada.enPesos(cargaPesos);
-
-            conversion.push({ moneda: cargaMoneda, pesos: cargaPesos, resultado });
-
-            let print = document.getElementById("resultado");
-            print.innerText = `El total es: $${resultado}`;
-
-            
-            localStorage.setItem("conversion", JSON.stringify(conversion));
-        } else {
-            document.getElementById("resultado").innerText = "La moneda ingresada no es válida";
-        }
-    }})
+    })
 }
-
-
-document.addEventListener('DOMContentLoaded', addButtonEventListener);
-
-document.getElementById("button").addEventListener('click', manejarConversion);
-
 
 function cargarHistorial() {
     const historial = JSON.parse(localStorage.getItem('conversion')) || [];
@@ -73,7 +56,7 @@ function cargarHistorial() {
         const listItem = document.createElement('li');
         listItem.textContent = `${conv.pesos} ARS a ${conv.moneda.toUpperCase()} = ${conv.resultado}`;
 
-        l
+        // eliminar una conversión individual
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Eliminar';
         deleteButton.onclick = () => eliminarConversion(conv);
@@ -92,12 +75,11 @@ function eliminarConversion(conversionEliminada) {
 
 function vaciarHistorial() {
     localStorage.removeItem('conversion');
-    
 }
 
 document.getElementById('clear-history').addEventListener('click', vaciarHistorial);
 
 document.addEventListener('DOMContentLoaded', () => {
     boton();
-    document.getElementById("button").addEventListener('click', manejarConversion);
+    cargarHistorial();
 });
