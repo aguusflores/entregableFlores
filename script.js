@@ -20,13 +20,12 @@ const divisa3 = new Divisas('reales', 170);
 const monedas = [divisa1, divisa2, divisa3];
 const conversion = [];
 
-const tasas = () => {
-    preventDefault();
+const tasas = (event) => {
+    event.preventDefault(); 
     let cargaMoneda = document.getElementById("moneda");
     let cargaPesos = parseInt(document.getElementById("pesos"));
     let convertir = document.getElementById("button");
 }
-
 
 function boton() {
    const addButton = document.querySelectorAll("button");
@@ -51,19 +50,23 @@ function boton() {
             let print = document.getElementById("resultado");
             print.innerText = `El total es: $${resultado}`;
 
-            
             localStorage.setItem("conversion", JSON.stringify(conversion));
         } else {
             document.getElementById("resultado").innerText = "La moneda ingresada no es válida";
+            Swal.fire({
+                title: "MONEDA INVALIDA",
+                text: "ELIJE OTRA MONEDA",
+                icon: "eror"
+              });
         }
     }})
 }
 
 
-document.addEventListener('DOMContentLoaded', addButtonEventListener);
+document.addEventListener('click', addButtonEventListener);
+document.getElementById("button").addEventListener('click', tasas);
 
-document.getElementById("button").addEventListener('click', manejarConversion);
-
+//LOCAL STORAGE
 
 function cargarHistorial() {
     const historial = JSON.parse(localStorage.getItem('conversion')) || [];
@@ -71,9 +74,8 @@ function cargarHistorial() {
 
     historial.forEach(conv => {
         const listItem = document.createElement('li');
-        listItem.textContent = `${conv.pesos} ARS a ${conv.moneda.toUpperCase()} = ${conv.resultado}`;
+        listItem.textContent = `${conv.pesos} ARS a ${conv.moneda} = ${conv.resultado}`;
 
-        l
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Eliminar';
         deleteButton.onclick = () => eliminarConversion(conv);
@@ -85,19 +87,28 @@ function cargarHistorial() {
 
 function eliminarConversion(conversionEliminada) {
     const historial = JSON.parse(localStorage.getItem('conversion')) || [];
-    const nuevoHistorial = historial.filter(conv => conv !== conversionEliminada);
-
+    const nuevoHistorial = historial.filter(conv => 
+        conv.pesos !== conversionEliminada.pesos || 
+        conv.moneda !== conversionEliminada.moneda || 
+        conv.resultado !== conversionEliminada.resultado
+    );
     localStorage.setItem('conversion', JSON.stringify(nuevoHistorial));
+    cargarHistorial(); // Refresh the list after deletion
 }
+
+
 
 function vaciarHistorial() {
     localStorage.removeItem('conversion');
+    document.getElementById("historial").innerHTML = '';
     
 }
 
 document.getElementById('clear-history').addEventListener('click', vaciarHistorial);
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener( () => {
     boton();
-    document.getElementById("button").addEventListener('click', manejarConversion);
+    cargarHistorial();
+    document.getElementById("button").addEventListener('click', tasas);
 });
