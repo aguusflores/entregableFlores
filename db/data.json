@@ -1,0 +1,18 @@
+
+[
+    {
+      "moneda": "dolar",
+      "tasa": 1500,
+      "pesos": 0
+    },
+    {
+      "moneda": "euros",
+      "tasa": 1000,
+      "pesos": 0
+    },
+    {
+      "moneda": "reales",
+      "tasa": 170,
+      "pesos": 0
+    }
+  ]
