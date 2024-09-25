@@ -1,4 +1,4 @@
-import { cargarHistorial, eliminarConversion, vaciarHistorial } from './storage.js';
+import { cargarHistorial, eliminarConversion, vaciarHistorial } from '.js/storage.js';
 
 class Divisas {
     constructor(moneda, tasa) {
@@ -19,7 +19,7 @@ const divisa2 = new Divisas('euros', 1000);
 const divisa3 = new Divisas('reales', 170);
 
 const monedas = [divisa1, divisa2, divisa3];
-let historial = [];
+let historial = JSON.parse(localStorage.getItem('historial')) || [];
 
 
 fetch("./db/data.json")
@@ -70,8 +70,41 @@ export async function boton(event) {
         console.log('Validación de entrada completada.');
     }
 }    
+
+
+// Filtrar historial por moneda
+function filtrarHistorialPorMoneda(moneda) {
+    const filtro = historial.filter(item => item.moneda === moneda);
+    let historialDiv = document.getElementById("historial");
+    historialDiv.innerHTML = filtro.map(item => 
+        `<p>${item.pesos} pesos a ${item.moneda} = ${item.resultado}</p>`
+    ).join("");
+}
+
+// Ordenar historial por pesos
+function ordenarHistorial() {
+    historial.sort((a, b) => a.pesos - b.pesos);
+    mostrarHistorial();
+}
+
+// Búsqueda de conversión específica
+function buscarPorID(id) {
+    const conversion = historial.find(item => item.id === id);
+    if (conversion) {
+        alert(`Conversión encontrada: ${conversion.pesos} pesos a ${conversion.moneda} = ${conversion.resultado}`);
+    } else {
+        alert("Conversión no encontrada");
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     boton();
     cargarHistorial();
     document.getElementById('clear-history').addEventListener('click', vaciarHistorial);
+    document.getElementById('filtrar-moneda').addEventListener('change', (e) => filtrarHistorialPorMoneda(e.target.value));
+    document.getElementById('ordenar-historial').addEventListener('click', ordenarHistorial);
+    document.getElementById('buscar-id').addEventListener('click', () => {
+        const id = prompt("Ingrese el ID de la conversión que desea buscar:");
+        buscarPorID(id);
+    });
 });

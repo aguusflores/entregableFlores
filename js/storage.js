@@ -1,4 +1,4 @@
-import { boton } from './script.js';
+import { boton } from '..js/script.js';
 // Cargar el historial desde localStorage
 export function cargarHistorial() {
     historial = JSON.parse(localStorage.getItem('historial')) || [];
@@ -44,3 +44,5 @@ document.getElementById('clear-history').addEventListener('click', vaciarHistori
 // Cargar el historial al cargar la página
 document.getElementById('clear-history').addEventListener('click', vaciarHistorial);
 document.addEventListener('DOMContentLoaded', cargarHistorial); 
+
+
